@@ -26,10 +26,10 @@ function setupRoutes(app) {
 
 // فنكشن معالجة الفورم
 function handleForm(req, res) {
-    const message = req.body.message; // ✔ التصليح هنا
+    const message = req.body.message; 
 
     console.log("📩 New Message:");
-    console.log("Message:", message);
+    console.log("\u202B" + message);
 
     res.json({ success: true }); // ✔ أحسن من send
 }
