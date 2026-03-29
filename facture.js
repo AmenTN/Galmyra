@@ -399,7 +399,7 @@ function sendOrder() {
 
     // ⚠️ تحقق من الإدخال
     if (!firstName || !lastName || !email || !phone || !address) {
-        alert("⚠️ يرجى ملء جميع الحقول");
+        alert("⚠️ Merci de remplir tous les champs obligatoires!!.");
         return;
     }
 
@@ -409,6 +409,12 @@ function sendOrder() {
         cart = JSON.parse(localStorage.getItem("cart")) || [];
     } catch {
         cart = [];
+    }
+    // 🛒 التحقق من السلة
+
+    if (cart.length === 0) {
+        alert(" ⚠️ Votre panier est vide!.");
+        return;
     }
 
     // 💰 الحساب

@@ -219,7 +219,7 @@ body {
 /* ================= HR STYLE ================= */
 hr {
     border: none;
-    height: 1px;
+    height: 2.5px;
     width: 100%;
     margin: 4px 0;
 
@@ -239,7 +239,7 @@ hr {
 @media (max-width: 768px) {
     hr {
         margin: 4px 0;
-        height: 1px;
+        height: 2.5px;
     }
 }
 
