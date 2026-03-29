@@ -209,3 +209,74 @@ body {
         font-size: 18px;
     }
 }
+
+
+
+
+                                                            /* =====          ===== */
+                                                            /* ===== NAVBAR X ===== */
+                                                            /* =====          ===== */
+/* ================= HR STYLE ================= */
+hr {
+    border: none;
+    height: 1px;
+    width: 100%;
+    margin: 4px 0;
+
+    /* لون وردي gradient */
+    background: linear-gradient(
+        to right,
+        transparent,
+        #ffabc9,
+        #ffabc9,
+        transparent
+    );
+
+    border-radius: 50px;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+    hr {
+        margin: 4px 0;
+        height: 1px;
+    }
+}
+
+.remove-btn {
+    background: #fff;
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+
+    transition: all 0.25s ease;
+}
+
+/* hover */
+.remove-btn:hover {
+    background: #ff4d4d;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
+
+/* click */
+.remove-btn:active {
+    transform: scale(0.95);
+}
+
+/* يعطيه positioning باهي مع الكارت */
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+                                                                /* =====          ===== */
+                                                                /* ===== NAVBAR X ===== */
+                                                                /* =====          ===== */
+                                                                

@@ -94,21 +94,23 @@ function handleSwipe() {
 
 
 ////////////////////////* ⌄ Drop down ☰ ⌄ */////////////////////////
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
-  const dropdown = document.querySelector(".shopDropdown");
-  const btn = document.querySelector(".shopBtn");
+    const dropdown = document.querySelector(".shopDropdown");
+    const btn = document.querySelector(".shopBtn");
 
-  btn.addEventListener("click", function(e) {
-    e.preventDefault();
-    dropdown.classList.toggle("active");
-  });
+    if(!dropdown || !btn) return;
 
-  document.addEventListener("click", function(e) {
-    if (!dropdown.contains(e.target)) {
-      dropdown.classList.remove("active");
-    }
-  });
+    btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        dropdown.classList.toggle("active");
+    });
+
+    document.addEventListener("click", function(e) {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove("active");
+        }
+    });
 
 });
 ////////////////////////* ⌃ Drop down ☰ ⌃ */////////////////////////
@@ -117,24 +119,32 @@ document.addEventListener("DOMContentLoaded", function() {
 ////////////////////////* ⌄ menu + submenu ⌄ */////////////////////////
 
 function openMenu(){
-  document.getElementById("sideMenu").classList.add("active");
+    const menu = document.getElementById("sideMenu");
+    if(menu){
+        menu.classList.add("active");
+    }
 }
 
 function closeMenu(){
-  document.getElementById("sideMenu").classList.remove("active");
+    const menu = document.getElementById("sideMenu");
+    if(menu){
+        menu.classList.remove("active");
+    }
 }
 
 function toggleSubMenu() {
-  var menu = document.getElementById("subMenu");
-  var title = document.querySelector(".submenu-title");
+    var menu = document.getElementById("subMenu");
+    var title = document.querySelector(".submenu-title");
 
-  menu.classList.toggle("active");
+    if(!menu || !title) return;
 
-  if (menu.classList.contains("active")) {
-    title.innerHTML = "Boutique -";
-  } else {
-    title.innerHTML = "Boutique +";
-  }
+    menu.classList.toggle("active");
+
+    if (menu.classList.contains("active")) {
+        title.innerHTML = "Boutique -";
+    } else {
+        title.innerHTML = "Boutique +";
+    }
 }
 ////////////////////////* ⌃ menu + submenu ⌃ */////////////////////////
 
@@ -249,9 +259,6 @@ function toggleSubMenu() {
 
 function initCartSystem() {
 
-  let cart = [];
-  let total = 0;
-
   const buttons = document.querySelectorAll('.buy-btn, .buy-btn2');
   const cartCount = document.querySelector('.cart-count');
   const cartDropdown = document.querySelector('.cart-dropdown');
@@ -264,21 +271,31 @@ function initCartSystem() {
   const toast = document.querySelector('.toast');
   const closeToast = document.querySelector('.close-toast');
 
+  // 🔴 الحماية (هذا أهم سطر)
+  if (!cartIcon || !cartDropdown || !cartItems || !totalPrice) {
+    return;
+  }
+
+  let cart = [];
+  let total = 0;
+
   // ================= ADD =================
+if (buttons.length > 0) {
   buttons.forEach(btn => {
     btn.addEventListener('click', (e) => {
-
       e.stopPropagation();
 
       const item = btn.closest('.item, .unit');
+      if (!item) return;
 
-      const img = item.querySelector('img').src;
+      const img = item.querySelector('img')?.src || "";
       const title = item.querySelector('.name, h4')?.innerText || "Product";
 
       const priceElement = item.querySelector('.new, .now');
-      const priceText = priceElement.innerText;
+      if (!priceElement) return;
 
-      const price = parseFloat(priceText.replace(/[^\d.]/g, ''));
+      const priceText = priceElement.innerText;
+      const price = parseFloat(priceText.replace(/[^\d.]/g, ""));
 
       cart.push({ img, title, price });
       total += price;
@@ -287,9 +304,22 @@ function initCartSystem() {
       showToast();
     });
   });
+}
 
+function setupCheckout() {
+  const checkoutBtn = document.querySelector('.checkout-btn');
+
+  if (!checkoutBtn) return;
+
+  checkoutBtn.addEventListener('click', () => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    window.location.href = "facture.html";
+  });
+}
   // ================= UPDATE =================
- function updateCart() {
+function updateCart() {
+
+  if (!cartItems) return;
 
   cartItems.innerHTML = "";
 
@@ -304,54 +334,43 @@ function initCartSystem() {
         <p>${product.title}</p>
         <span>${product.price} TND</span>
       </div>
-      <button class="remove-btn" data-index="${index}">×</button>
+      <button class="remove-btn" data-index="${index}">✕</button>
     `;
 
     cartItems.appendChild(div);
   });
 
-  // ✅ عدد المنتجات
-  cartCount.innerText = cart.length;
-
-  // ✅ Sous-total
-  totalPrice.innerText = total.toFixed(2) + " TND";
-
-  // =========================
-  // 🚚 CALCUL LIVRAISON
-  // =========================
+  if (cartCount) cartCount.innerText = cart.length;
+  if (totalPrice) totalPrice.innerText = total.toFixed(2) + " TND";
 
   let shipping = 7;
+  if (total >= 200) shipping = 0;
 
-  if (total >= 200) {
-    shipping = 0;
-  }
+  if (shippingPriceEl) shippingPriceEl.innerText = shipping + " TND";
 
-  shippingPriceEl.innerText = shipping + " TND";
-
-  // ✅ FINAL TOTAL
   const finalTotal = total + shipping;
-  finalPriceEl.innerText = finalTotal.toFixed(2) + " TND";
+  if (finalPriceEl) finalPriceEl.innerText = finalTotal.toFixed(2) + " TND";
 
   addRemoveEvents();
 }
 
   // ================= REMOVE =================
-  function addRemoveEvents() {
-    document.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
+function addRemoveEvents() {
+  document.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
 
-        const index = btn.getAttribute('data-index');
+      const index = btn.getAttribute('data-index');
 
-        total -= cart[index].price;
-        cart.splice(index, 1);
+      total -= cart[index].price;
+      cart.splice(index, 1);
 
-        updateCart();
-      });
+      updateCart();
     });
-  }
-
+  });
+}
   // ================= TOGGLE =================
+if (cartIcon && cartDropdown) {
   cartIcon.addEventListener('click', (e) => {
     e.stopPropagation();
     cartDropdown.classList.toggle('show');
@@ -360,23 +379,26 @@ function initCartSystem() {
   document.addEventListener('click', () => {
     cartDropdown.classList.remove('show');
   });
+}
 
   // ================= TOAST FIX =================
-  function showToast() {
+function showToast() {
+  if (!toast) return;
 
-    toast.classList.add('show');
+  toast.classList.add('show');
 
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2000);
-  }
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
 
-  if (closeToast) {
-    closeToast.addEventListener('click', () => {
-      toast.classList.remove('show');
-    });
-  }
+if (closeToast) {
+  closeToast.addEventListener('click', () => {
+    toast.classList.remove('show');
+  });
+}
 
+setupCheckout()
 }
 
 // تشغيل
@@ -509,12 +531,11 @@ document.addEventListener("DOMContentLoaded", initForm);
 ////////////////////////* ⌄ footer ⌄ */////////////////////////
 
 function initFooterAccordion() {
-
   const isMobile = window.matchMedia("(max-width: 768px)").matches;
   const boxes = document.querySelectorAll(".footer-box");
 
   boxes.forEach(box => {
-    const title = box.querySelector(".footer-title");
+    const title = box.querySelector(".footer-title, .footer-title2");
     const content = box.querySelector(".footer-links, .newsletter");
 
     if (!title || !content) return;
@@ -528,31 +549,29 @@ function initFooterAccordion() {
 
         const isActive = box.classList.contains("active");
 
-        // نسكرو الكل
+        // نسكر الكل
         boxes.forEach(b => {
           b.classList.remove("active");
           const c = b.querySelector(".footer-links, .newsletter");
           if (c) c.style.maxHeight = null;
         });
 
-        // إذا موش مفتوح → نفتحو
+        // نفتح الحالي
         if (!isActive) {
           box.classList.add("active");
           content.style.maxHeight = content.scrollHeight + "px";
         }
       };
     } else {
-      // PC → نخلي كل شي مفتوح
+      // PC
       box.classList.remove("active");
       content.style.maxHeight = "none";
     }
   });
 }
 
-// load + resize
 window.addEventListener("load", initFooterAccordion);
 window.addEventListener("resize", initFooterAccordion);
-
 ////////////////////////* ⌃ footer ⌃ */////////////////////////
 
 
