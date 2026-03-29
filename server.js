@@ -24,7 +24,7 @@ function setupRoutes(app) {
 
     res.json({ success: true });
   });
-  
+
   app.post("/order", handleOrder);
   function handleOrder(req, res) {
   const order = req.body;
@@ -34,8 +34,6 @@ function setupRoutes(app) {
 
   res.json({ success: true });
 }
-
-
 
 }
 
