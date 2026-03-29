@@ -24,6 +24,19 @@ function setupRoutes(app) {
 
     res.json({ success: true });
   });
+  
+  app.post("/order", handleOrder);
+  function handleOrder(req, res) {
+  const order = req.body;
+
+  console.log("🧾 New Order:");
+  console.log(order);
+
+  res.json({ success: true });
+}
+
+
+
 }
 
 function startServer() {

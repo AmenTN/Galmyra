@@ -279,4 +279,68 @@ hr {
                                                                 /* =====          ===== */
                                                                 /* ===== NAVBAR X ===== */
                                                                 /* =====          ===== */
+
+
+/* //////////////////////             ///////////////////*/
+ /* //////////////////////      popuos           ///////////////////*/
+/* الخلفية */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* الصندوق */
+.popup-content {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 12px;
+  text-align: center;
+  width: 90%;
+  max-width: 350px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* العنوان */
+.popup-content h2 {
+  margin-bottom: 10px;
+}
+
+/* النص */
+.popup-content p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* زر */
+.popup-content button {
+  background: #000;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* animation */
+@keyframes fadeIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* //////////////////////     popuos        ///////////////////*/
+ /* //////////////////////                 ///////////////////*/
                                                                 

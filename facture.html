@@ -159,30 +159,30 @@
 
         <div class="form-group">
             <label>Prénom</label>
-            <input type="text" placeholder="Votre prénom">
+            <input type="text" placeholder="Votre prénom" id="firstName">
         </div>
 
         <div class="form-group">
             <label>Nom</label>
-            <input type="text" placeholder="Votre nom">
+            <input type="text" placeholder="Votre nom" id="lastName">
         </div>
 
         <div class="form-group">
             <label>E-mail</label>
-            <input type="email" placeholder="example@email.com">
+            <input type="email" placeholder="example@email.com" id="email">
         </div>
 
         <div class="form-group">
             <label>Téléphone</label>
-            <input type="text" placeholder="Votre numéro">
+            <input type="text" placeholder="Votre numéro" id="phone">
         </div>
 
         <div class="form-group">
             <label>Adresse</label>
-            <input type="text" placeholder="Votre adresse">
+            <input type="text" placeholder="Votre adresse" id="address">
         </div>
 
-        <button class="confirm-btn">Confirmer la commande</button>
+        <button class="confirm-btn" onclick="sendOrder()">Confirmer la commande</button>
 
     </div>
 
@@ -216,6 +216,22 @@
 
 </section>
                                                   <!-- ===================== -->
+                                                  <!--        popuos         -->
+                                                  <!-- ===================== -->
+      <div id="popup" class="popup">
+        <div class="popup-content">
+          <h3>✅ Commande confirmée !</h3>
+          <p>Merci pour votre confiance<br>Nous vous contacterons très bientôt!.</p>
+          <button onclick="closePopup()">OK</button>
+        </div>
+      </div>
+                                                  <!-- ===================== -->
+                                                  <!--        popuos         -->
+                                                  <!-- ===================== -->
+
+
+
+                                                 <!-- ===================== -->
                                                   <!--      FACTURE PAGE     -->
                                                   <!-- ===================== -->
 

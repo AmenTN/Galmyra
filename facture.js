@@ -384,3 +384,140 @@ function initForm() {
 document.addEventListener("DOMContentLoaded", initForm);
 
 //////////////////////////////////*  ⌃ atached with server.js ⌃ *///////////////////////////////////
+
+
+
+/* //////////////////////                   ///////////////////*/
+ /* //////////////////////      popuos           ///////////////////*/
+function handleOrder() {
+  const popup = document.getElementById("popup");
+  const inputs = document.querySelectorAll(".form-group input");
+
+  let valid = true;
+
+  inputs.forEach(input => {
+    if (input.value.trim() === "") {
+      valid = false;
+    }
+  });
+
+  if (!valid) {
+    alert("❗ عبي كل المعلومات");
+    return;
+  }
+
+  // عرض popup
+  popup.style.display = "flex";
+
+  // مسح panier (اختياري)
+  localStorage.removeItem("cart");
+}
+
+// ربط الزر
+document.querySelector(".confirm-btn").addEventListener("click", (e) => {
+  e.preventDefault();
+  handleOrder();
+});
+
+// غلق popup
+function closeOrderPopup() {
+  document.getElementById("popup").style.display = "none";
+
+  // redirect (اختياري)
+  window.location.href = "index.html";
+}
+
+document.getElementById("closePopup").addEventListener("click", closeOrderPopup);
+/* //////////////////////                   ///////////////////*/
+ /* //////////////////////      popuos           ///////////////////*/
+
+
+/* //////////////////////                   ///////////////////*/
+ /* //////////////////////      info client           ///////////////////*/
+// ===============================
+// 🧾 إرسال الطلب
+// ===============================
+
+function sendOrder() {
+  // 📌 معلومات المستخدم
+  const firstName = document.getElementById("firstName")?.value.trim();
+  const lastName = document.getElementById("lastName")?.value.trim();
+  const email = document.getElementById("email")?.value.trim();
+  const phone = document.getElementById("phone")?.value.trim();
+  const address = document.getElementById("address")?.value.trim();
+
+  // ⚠️ تحقق من الإدخال
+  if (!firstName || !lastName || !email || !phone || !address) {
+    alert("⚠️ يرجى ملء جميع الحقول");
+    return;
+  }
+
+  // 🛒 المنتجات
+  let cart = [];
+  try {
+    cart = JSON.parse(localStorage.getItem("cart")) || [];
+  } catch (e) {
+    cart = [];
+  }
+
+  // 📊 الحساب
+  const subtotal = cart.reduce((acc, item) => acc + (item.price || 0), 0);
+  const shipping = subtotal > 200 ? 0 : 7;
+  const total = subtotal + shipping;
+
+  // 📦 البيانات الكاملة
+  const data = {
+    customer: {
+      firstName,
+      lastName,
+      email,
+      phone,
+      address
+    },
+    cart,
+    subtotal,
+    shipping,
+    total
+  };
+
+  // 🚀 إرسال للسيرفر
+  fetch("/order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log("✅ Order sent:", data);
+
+      showPopup(); // 🔥 إظهار البوب اب
+
+      // 🧹 تفريغ السلة (اختياري)
+      localStorage.removeItem("cart");
+    })
+    .catch(err => {
+      console.error("❌ Error:", err);
+    });
+}
+
+// ===============================
+// 💬 Popup
+// ===============================
+
+function showPopup() {
+  const popup = document.getElementById("popup");
+  if (popup) {
+    popup.style.display = "flex";
+  }
+}
+
+function closePopup() {
+  const popup = document.getElementById("popup");
+  if (popup) {
+    popup.style.display = "none";
+  }
+}
+ /* //////////////////////      info client           ///////////////////*/
+ /* //////////////////////                  ///////////////////*/
