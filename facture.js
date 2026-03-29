@@ -445,18 +445,22 @@ function sendOrder() {
         localStorage.removeItem("cart");
 
         // 🔘 زر OK (هنا دمجنا closePopup)
-        const closeBtn = document.getElementById("closePopup");
+         const closeBtn = document.getElementById("closePopup");
+
         if (closeBtn) {
-            closeBtn.onclick = function () {
+            closeBtn.addEventListener("click", function () {
+
                 // إخفاء popup
+                const popup = document.getElementById("popup");
                 if (popup) popup.style.display = "none";
 
-                // الرجوع للصفحة الرئيسية
+                // تفريغ السلة
+                localStorage.removeItem("cart");
+
+                // الرجوع للرئيسية
                 window.location.href = "index.html";
-            };
+            });
         }
-    })
-    .catch(err => {
         console.error("❌ Error:", err);
         alert("❌ صار خطأ، حاول مرة أخرى");
     });
