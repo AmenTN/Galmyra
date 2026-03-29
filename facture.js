@@ -399,7 +399,7 @@ function sendOrder() {
 
     // ⚠️ تحقق من الإدخال
     if (!firstName || !lastName || !email || !phone || !address) {
-        alert("⚠️ Merci de remplir tous les champs obligatoires!!.");
+        showFormErrorPopup();
         return;
     }
 
@@ -413,8 +413,9 @@ function sendOrder() {
     // 🛒 التحقق من السلة
 
     if (cart.length === 0) {
-        alert(" ⚠️ Votre panier est vide!.");
+        if (!cart.length) {showEmptyCartPopup();
         return;
+    }
     }
 
     // 💰 الحساب
@@ -474,3 +475,45 @@ function sendOrder() {
 
  /* //////////////////////      info client           ///////////////////*/
  /* //////////////////////                  ///////////////////*/
+
+
+
+
+
+/* //////////////////////                  ///////////////////*/
+/* //////////////////////    popups2              ///////////////////*/
+ function showEmptyCartPopup() {
+    const popup = document.getElementById("popup2");
+    const closeBtn = document.getElementById("closePopup2");
+
+    if (popup) {
+        popup.style.display = "flex"; // أو block حسب CSS عندك
+    }
+
+    if (closeBtn) {
+        closeBtn.onclick = function () {
+            popup.style.display = "none";
+        };
+    }
+}
+/* //////////////////////    popups2              ///////////////////*/
+/* //////////////////////                   ///////////////////*/
+
+
+/* //////////////////////                   ///////////////////*/
+/* //////////////////////    popups3              ///////////////////*/
+function showFormErrorPopup() {
+  const popup = document.getElementById("popup3");
+  const closeBtn = document.getElementById("closePopup3");
+
+  if (popup) popup.style.display = "flex";
+
+  if (closeBtn) {
+    closeBtn.onclick = function () {
+      popup.style.display = "none";
+    };
+  }
+}
+
+/* //////////////////////    popups3              ///////////////////*/
+/* //////////////////////                   ///////////////////*/
