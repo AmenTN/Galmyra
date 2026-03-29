@@ -7,12 +7,13 @@ function setupMiddleware(app) {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.use(express.static(path.join(__dirname, "public")));
+  // بدل public → خليه يخدم على نفس الفولدر
+  app.use(express.static(__dirname));
 }
 
 function setupRoutes(app) {
   app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(__dirname, "index.html"));
   });
 
   app.post("/send", (req, res) => {
@@ -33,7 +34,7 @@ function startServer() {
   setupRoutes(app);
 
   app.listen(PORT, () => {
-    console.log(`🚀 Server running`);
+    console.log("🚀 Server running");
   });
 }
 
