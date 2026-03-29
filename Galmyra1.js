@@ -146,120 +146,94 @@ function toggleSubMenu() {
 ////////////////////////* ⌄ slider2 item par 3 image ⌄ */////////////////////////
 
 (function () {
+    const container = document.querySelector('.items-container');
+    const items = container.children;
 
-  const container = document.querySelector('.items-container');
-  const items = Array.from(container.children);
+    const prevBtn = document.querySelector('.nav-btn.prev');
+    const nextBtn = document.querySelector('.nav-btn.next');
 
-  const prevBtn = document.querySelector('.nav-btn.prev');
-  const nextBtn = document.querySelector('.nav-btn.next');
+    let index = 0;
+    const visibleItems = 3;
 
-  let index = 0;
-  let visibleItems = 3;
-  let autoSlide;
+    let startX = 0;
+    let autoSlide = null;
 
-  let startX = 0;
-  let endX = 0;
-  let isDragging = false;
+    const SWIPE_THRESHOLD = 40;
 
-  const SWIPE_THRESHOLD = 50;
-
-  // مهم للهاتف
-  container.style.touchAction = "pan-y";
-
-  // ================= UPDATE =================
-function updateSlider() {
-  const isMobile = window.innerWidth < 768;
-
-  container.scrollTo({
-    left: index * (container.clientWidth / visibleItems),
-    behavior: isMobile ? "auto" : "smooth"
-  });
-}
-
-  // ================= NEXT =================
-  function nextSlide() {
-    if (index < items.length - visibleItems) {
-      index += visibleItems;
-    } else {
-      index = 0;
-    }
-    updateSlider();
-  }
-
-  // ================= PREV =================
-  function prevSlide() {
-    if (index > 0) {
-      index -= visibleItems;
-    } else {
-      index = 0;
-    }
-    updateSlider();
-  }
-
-  // ================= BUTTONS =================
-  nextBtn.addEventListener('click', () => {
-    nextSlide();
-    restartAuto();
-  });
-
-  prevBtn.addEventListener('click', () => {
-    prevSlide();
-    restartAuto();
-  });
-
-  // ================= TOUCH =================
-  container.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    endX = startX; // مهم
-    isDragging = true;
-    stopAuto();
-  });
-
-  container.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    endX = e.touches[0].clientX;
-  });
-
-  container.addEventListener('touchend', () => {
-    isDragging = false;
-
-    let diff = startX - endX;
-
-    // ❌ Tap (نقرة صغيرة) → تجاهل
-    if (Math.abs(diff) < 30) {
-      startAuto();
-      return;
+    // ================= UPDATE =================
+    function updateSlider() {
+        container.scrollLeft = index * (container.clientWidth / visibleItems);
     }
 
-    // 👉 Swipe
-    if (diff > SWIPE_THRESHOLD) {
-      nextSlide();
-    } else if (diff < -SWIPE_THRESHOLD) {
-      prevSlide();
+    // ================= NEXT / PREV =================
+    function nextSlide() {
+        index = (index < items.length - visibleItems)
+            ? index + visibleItems
+            : 0;
+        updateSlider();
+    }
+
+    function prevSlide() {
+        index = (index > 0)
+            ? index - visibleItems
+            : 0;
+        updateSlider();
+    }
+
+    // ================= BUTTONS =================
+    nextBtn.onclick = () => {
+        nextSlide();
+        restartAuto();
+    };
+
+    prevBtn.onclick = () => {
+        prevSlide();
+        restartAuto();
+    };
+
+    // ================= TOUCH (خفيف) =================
+    container.ontouchstart = (e) => {
+        startX = e.touches[0].clientX;
+        stopAuto();
+    };
+
+    container.ontouchend = (e) => {
+        let endX = e.changedTouches[0].clientX;
+        let diff = startX - endX;
+
+        if (Math.abs(diff) < 25) {
+            startAuto();
+            return;
+        }
+
+        if (diff > SWIPE_THRESHOLD) {
+            nextSlide();
+        } else {
+            prevSlide();
+        }
+
+        startAuto();
+    };
+
+    // ================= AUTO (optimized) =================
+    function startAuto() {
+        if (autoSlide) return; // يمنع duplication
+        autoSlide = setInterval(nextSlide, 5000);
+    }
+
+    function stopAuto() {
+        clearInterval(autoSlide);
+        autoSlide = null;
+    }
+
+    function restartAuto() {
+        stopAuto();
+        startAuto();
     }
 
     startAuto();
-  });
-
-  // ================= AUTO =================
-  function startAuto() {
-    autoSlide = setInterval(nextSlide, 4000);
-  }
-
-  function stopAuto() {
-    clearInterval(autoSlide);
-  }
-
-  function restartAuto() {
-    stopAuto();
-    startAuto();
-  }
-
-  // ================= START =================
-  startAuto();
 
 })();
-
 
 
 

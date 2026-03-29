@@ -1,53 +1,40 @@
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
 
-// إعداد middleware
 function setupMiddleware(app) {
-    app.use(express.urlencoded({ extended: true }));
-    app.use(express.json());
+  app.use(cors());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
-    // لعرض الملفات (HTML, CSS, JS)
-    app.use(express.static(__dirname));
+  app.use(express.static(path.join(__dirname, "public")));
 }
 
-// إعداد routes
 function setupRoutes(app) {
+  app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+  });
 
-    // الصفحة الرئيسية
-    app.get("/", (req, res) => {
-        res.sendFile(path.join(__dirname, "index.html"));
-    });
-
-    // استقبال الرسالة من الفورم
-    app.post("/send", (req, res) => {
-        handleForm(req, res);
-    });
-}
-
-// فنكشن معالجة الفورم
-function handleForm(req, res) {
-    const message = req.body.message; 
+  app.post("/send", (req, res) => {
+    const message = req.body.message;
 
     console.log("📩 New Message:");
-    console.log("\u202B" + message);
+    console.log(message);
 
-    res.json({ success: true }); // ✔ أحسن من send
+    res.json({ success: true });
+  });
 }
 
-// تشغيل السيرفر
 function startServer() {
-    const app = express();
-    const PORT = process.env.PORT || 3000;
+  const app = express();
+  const PORT = process.env.PORT || 3000;
 
-    setupMiddleware(app);
-    setupRoutes(app);
+  setupMiddleware(app);
+  setupRoutes(app);
 
-    app.listen(PORT, () => {
-        console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running`);
+  });
 }
 
-// تشغيل
 startServer();
-
-
