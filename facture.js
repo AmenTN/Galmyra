@@ -336,3 +336,51 @@ function initFooterAccordion() {
 window.addEventListener("load", initFooterAccordion);
 window.addEventListener("resize", initFooterAccordion);
 ////////////////////////* ⌃ footer ⌃ */////////////////////////
+
+
+//////////////////////////////////*  ⌄ atached with server.js ⌄ *///////////////////////////////////
+
+function initForm() {
+    const form = document.getElementById("formMessage");
+    const popup = document.getElementById("popupMsgNew");
+
+    if (!form || !popup) {
+        console.log("❌ form or popup not found");
+        return;
+    }
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const message = form.querySelector("input[name='message']").value.trim();
+        if (!message) return;
+
+        try {
+            await fetch("/send", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message })
+            });
+
+            // ✅ إظهار popup
+            popup.classList.add("show");
+
+            // إخفاء بعد 1.5s
+            setTimeout(() => {
+                popup.classList.remove("show");
+            }, 1500);
+
+            form.reset();
+
+        } catch (err) {
+            console.log("error:", err);
+        }
+    });
+}
+
+// مهم
+document.addEventListener("DOMContentLoaded", initForm);
+
+//////////////////////////////////*  ⌃ atached with server.js ⌃ *///////////////////////////////////
