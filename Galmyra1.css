@@ -97,7 +97,7 @@ body {
 }
 
 
-/*           ------------ Discont Title-------------                */
+/*///////////////////////////////////////////// Discont Title //////////////////////////////////////      */
 
 .discont-title {
   text-align: center;
@@ -133,9 +133,33 @@ body {
   transform: translateX(100%);
 }
 
-/*           -------------------------                */
+@media (max-width: 768px) {
+  .discont-title::before,
+  .discont-title::after {
+    width: 40px;
+  }
 
-/*           -------------Discover title------------                */
+  .discont-title {
+    font-size: 25px;
+  }
+}
+@media (max-width: 768px) {
+  .discont-title::before {
+    transform: translateX(-170%);
+  }
+
+  .discont-title::after {
+    transform: translateX(170%);
+  }
+}
+
+
+
+
+
+/*///////////////////////////////////////////// Discont Title //////////////////////////////////////      */
+
+/* /////////////////////////////////////////// Discover title /////////////////////////////////////              */ 
 
 .discover-title {
   text-align: center;
@@ -178,8 +202,30 @@ body {
   right: 30%;
   transform: translateX(100%);
 }
+@media (max-width: 768px) {
+  .discover-title::before,
+  .discover-title::after {
+    width: 40px;
+  }
 
-/*    ------------------------------               */
+  .discover-title {
+    font-size: 20px;
+  }
+}
+@media (max-width: 768px) {
+  .discover-title::before {
+    transform: translateX(-170%);
+  }
+
+  .discover-title::after {
+    transform: translateX(170%);
+  }
+}
+
+
+
+
+/* /////////////////////////////////////////// Discover title /////////////////////////////////////              */
 
 
 .nav-links22 {
@@ -270,24 +316,7 @@ body {
   margin-right: 320px;
 }
 
-.search-box22 {
-  position: relative;
-}
 
-.search-box22 i {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #777;
-}
-
-.search-box22 input {
-  padding: 6px 12px 6px 30px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  outline: none;
-}
 
 /* cart */
 .cart22 {
@@ -1246,6 +1275,12 @@ body {
 ========================= */
 @media (max-width: 768px) {
 
+  .newsletter input {
+    direction: auto; /* مهم */
+    unicode-bidi: plaintext; /* يحل مشكلة القلب */
+    text-align: left;
+  }
+
   .footer-container {
     grid-template-columns: 1fr;
   }
@@ -1266,17 +1301,17 @@ body {
     content: "-";
   }
 
-  .footer-links,
-  .newsletter {
+.footer-links {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.35s ease;
-  }
+}
 
-  .newsletter {
-    display: flex;
-    flex-direction: column;
-  }
+/* newsletter ديما ظاهرة */
+.newsletter {
+    max-height: none;
+    overflow: visible;
+}
 
   .newsletter input,
   .newsletter button {
@@ -1284,8 +1319,11 @@ body {
     border-radius: 5px;
     margin: 5px 0;
   }
-}
 
+.footer-box .footer-title2::after {
+    display: none;
+  }
+}
 /* =========================
    Desktop
 ========================= */
