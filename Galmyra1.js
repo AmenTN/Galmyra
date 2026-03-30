@@ -279,126 +279,157 @@ function initCartSystem() {
   let cart = [];
   let total = 0;
 
-  // ================= ADD =================
-if (buttons.length > 0) {
-  buttons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
+  // 🆕 التحقق من انتهاء 24 ساعة
+  const savedTime = localStorage.getItem("cart_time");
+  if (savedTime) {
+    const now = Date.now();
+    const diff = now - parseInt(savedTime);
 
-      const item = btn.closest('.item, .unit');
-      if (!item) return;
+    if (diff > 7 * 24 * 60 * 60 * 1000) { // 168 ساعة
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cart_time");
+    }
+  }
 
-      const img = item.querySelector('img')?.src || "";
-      const title = item.querySelector('.name, h4')?.innerText || "Product";
+  // ✅ استرجاع السلة بعد refresh
+  const savedCart = JSON.parse(localStorage.getItem("cart"));
 
-      const priceElement = item.querySelector('.new, .now');
-      if (!priceElement) return;
+  if (savedCart) {  
+    cart = savedCart;
 
-      const priceText = priceElement.innerText;
-      const price = parseFloat(priceText.replace(/[^\d.]/g, ""));
-
-      cart.push({ img, title, price });
-      total += price;
-
-      updateCart();
-      showToast();
+    cart.forEach(item => {
+      total += item.price;
     });
-  });
-}
 
-function setupCheckout() {
-  const checkoutBtn = document.querySelector('.checkout-btn');
+    updateCart(); // تحديث الواجهة
+  }
 
-  if (!checkoutBtn) return;
+  // ================= ADD =================
+  if (buttons.length > 0) {
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
 
-  checkoutBtn.addEventListener('click', () => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-    window.location.href = "facture.html";
-  });
-}
+        const item = btn.closest('.item, .unit');
+        if (!item) return;
+
+        const img = item.querySelector('img')?.src || "";
+        const title = item.querySelector('.name, h4')?.innerText || "Product";
+
+        const priceElement = item.querySelector('.new, .now');
+        if (!priceElement) return;
+
+        const priceText = priceElement.innerText;
+        const price = parseFloat(priceText.replace(/[^\d.]/g, ""));
+
+        cart.push({ img, title, price });
+
+        // 🆕 تخزين الوقت أول مرة
+        localStorage.setItem("cart_time", Date.now());
+        saveCart(cart);
+        total += price;
+
+        updateCart();
+        showToast();
+      });
+    });
+  }
+
+  function setupCheckout() {
+    const checkoutBtn = document.querySelector('.checkout-btn');
+
+    if (!checkoutBtn) return;
+
+    checkoutBtn.addEventListener('click', () => {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      window.location.href = "facture.html";
+    });
+  }
+
   // ================= UPDATE =================
-function updateCart() {
+  function updateCart() {
 
-  if (!cartItems) return;
+    if (!cartItems) return;
 
-  cartItems.innerHTML = "";
+    cartItems.innerHTML = "";
 
-  cart.forEach((product, index) => {
+    cart.forEach((product, index) => {
 
-    const div = document.createElement('div');
-    div.classList.add('cart-item');
+      const div = document.createElement('div');
+      div.classList.add('cart-item');
 
-    div.innerHTML = `
-      <img src="${product.img}">
-      <div class="info">
-        <p>${product.title}</p>
-        <span>${product.price} TND</span>
-      </div>
-      <button class="remove-btn" data-index="${index}">✕</button>
-    `;
+      div.innerHTML = `
+        <img src="${product.img}">
+        <div class="info">
+          <p>${product.title}</p>
+          <span>${product.price} TND</span>
+        </div>
+        <button class="remove-btn" data-index="${index}">✕</button>
+      `;
 
-    cartItems.appendChild(div);
-  });
+      cartItems.appendChild(div);
+    });
 
-  if (cartCount) cartCount.innerText = cart.length;
-  if (totalPrice) totalPrice.innerText = total.toFixed(2) + " TND";
+    if (cartCount) cartCount.innerText = cart.length;
+    if (totalPrice) totalPrice.innerText = total.toFixed(2) + " TND";
 
-  let shipping = 7;
-  if (total >= 200) shipping = 0;
+    let shipping = 7;
+    if (total >= 200) shipping = 0;
 
-  if (shippingPriceEl) shippingPriceEl.innerText = shipping + " TND";
+    if (shippingPriceEl) shippingPriceEl.innerText = shipping + " TND";
 
-  const finalTotal = total + shipping;
-  if (finalPriceEl) finalPriceEl.innerText = finalTotal.toFixed(2) + " TND";
+    const finalTotal = total + shipping;
+    if (finalPriceEl) finalPriceEl.innerText = finalTotal.toFixed(2) + " TND";
 
-  addRemoveEvents();
-}
+    addRemoveEvents();
+  }
 
   // ================= REMOVE =================
-function addRemoveEvents() {
-  document.querySelectorAll('.remove-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
+  function addRemoveEvents() {
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
 
-      const index = btn.getAttribute('data-index');
+        const index = btn.getAttribute('data-index');
 
-      total -= cart[index].price;
-      cart.splice(index, 1);
-
-      updateCart();
+        total -= cart[index].price;
+        cart.splice(index, 1);
+        saveCart(cart);
+        updateCart();
+      });
     });
-  });
-}
-  // ================= TOGGLE =================
-if (cartIcon && cartDropdown) {
-  cartIcon.addEventListener('click', (e) => {
-    e.stopPropagation();
-    cartDropdown.classList.toggle('show');
-  });
+  }
 
-  document.addEventListener('click', () => {
-    cartDropdown.classList.remove('show');
-  });
-}
+  // ================= TOGGLE =================
+  if (cartIcon && cartDropdown) {
+    cartIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      cartDropdown.classList.toggle('show');
+    });
+
+    document.addEventListener('click', () => {
+      cartDropdown.classList.remove('show');
+    });
+  }
 
   // ================= TOAST FIX =================
-function showToast() {
-  if (!toast) return;
+  function showToast() {
+    if (!toast) return;
 
-  toast.classList.add('show');
+    toast.classList.add('show');
 
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 2000);
-}
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2000);
+  }
 
-if (closeToast) {
-  closeToast.addEventListener('click', () => {
-    toast.classList.remove('show');
-  });
-}
+  if (closeToast) {
+    closeToast.addEventListener('click', () => {
+      toast.classList.remove('show');
+    });
+  }
 
-setupCheckout()
+  setupCheckout()
 }
 
 // تشغيل
@@ -581,3 +612,9 @@ window.addEventListener("resize", initFooterAccordion);
 
 
 
+
+////////////////////////* ⌄ reade panier ⌄ */////////////////////////
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+}////////////////////////* ⌃ reade panier ⌃ */////////////////////////
