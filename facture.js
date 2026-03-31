@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", initForm);
 
 
 /* //////////////////////                   ///////////////////*/
- /* //////////////////////      popuos           ///////////////////*/
+ /* //////////////////////      info client           ///////////////////*/
 function sendOrder() {
     // 🧾 معلومات المستخدم
     const firstName = document.getElementById("firstName")?.value.trim();
@@ -433,44 +433,45 @@ function sendOrder() {
     };
 
     // 🚀 إرسال للسيرفر
-    fetch("/order", {
+      fetch("/order", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(response => {
+      })
+      .then(res => res.json())
+      .then(response => {
+
         console.log("✅ Order sent:", response);
 
-        // 📢 إظهار popup
+        // إظهار popup
         const popup = document.getElementById("popup");
         if (popup) popup.style.display = "flex";
 
-        // 🧹 تفريغ cart
+        // تفريغ cart
         localStorage.removeItem("cart");
 
-        // 🔘 زر OK (هنا دمجنا closePopup)
-         const closeBtn = document.getElementById("closePopup");
+        // زر OK
+        const closeBtn = document.getElementById("closePopup");
 
         if (closeBtn) {
-            closeBtn.addEventListener("click", function () {
+          closeBtn.addEventListener("click", function () {
 
-                // إخفاء popup
-                const popup = document.getElementById("popup");
-                if (popup) popup.style.display = "none";
+            const popup = document.getElementById("popup");
+            if (popup) popup.style.display = "none";
 
-                // تفريغ السلة
-                localStorage.removeItem("cart");
+            localStorage.removeItem("cart");
 
-                // الرجوع للرئيسية
-                window.location.href = "index.html";
-            });
+            window.location.href = "index.html";
+          });
         }
+
+      })
+      .catch((err) => {
         console.error("❌ Error:", err);
-        alert("❌ صار خطأ، حاول مرة أخرى");
-    });
+        alert("صار خطأ، حاول مرة أخرى");
+      });
 }
 
  /* //////////////////////      info client           ///////////////////*/
