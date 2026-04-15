@@ -1245,6 +1245,11 @@ body {
   border: none;
   outline: none;
   border-radius: 5px 0 0 5px;
+
+}
+
+.newsletter input {
+  width: 247px !important;
 }
 
 .newsletter button {
